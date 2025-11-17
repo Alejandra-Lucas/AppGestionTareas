@@ -1,6 +1,4 @@
-java
-
-  public class Invitado extends Usuario {
+public class Invitado extends Usuario {
 
     public Invitado(String id, String nombre, String nickname. String correo, String password) {
       super(id, nombre, nickname, correo, password)
