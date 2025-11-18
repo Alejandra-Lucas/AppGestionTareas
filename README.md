@@ -6,3 +6,4 @@ Proyecto final de programación: Aplicación de gestión de tareas
 |-|-|
 |Contreras Olivares Itzel|322298563|
 |Lucas Coronel Alejandra|319194335|
+|Sánchez Martínez Rodrigo|319297168|
