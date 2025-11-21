@@ -18,10 +18,10 @@ public class GestorTareas {
         return new ArrayList<>(tareas); 
     }
     
-    public List<Tarea> getTareasPorUsuario(Usuario usuario) {
+    public List<Tarea> getTareasPorUsuario(String usuario) {
         List<Tarea> resultado = new ArrayList<>();
         for (Tarea tarea : tareas) {
-            if (tarea.getUsuarioAsignado().getId().equals(usuario.getId())) {
+            if (tarea.getUsuarioAsignado().equals(usuario)) {
                 resultado.add(tarea);
             }
         }
