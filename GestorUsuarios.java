@@ -10,9 +10,9 @@ public class GestorUsuarios {
   }
 
   private void cargarUsuariosPrueba() {
-    usuarios.add(new Administrador("1", "Admin principal", "admin", "admin@correo.com", "123"));
-    usuarios.add(new Desarrollador("2", "Ana Dev", "anadev", "ana@correo.com", "123"));
-    usuarios.add(new Invitado("3", "Invitado Test", "invitado", "invitado@correo.com", "123"));
+    usuarios.add(new Administrador(1, "Admin principal", "admin", "admin@correo.com", "123"));
+    usuarios.add(new Desarrollador(2, "Ana Dev", "anadev", "ana@correo.com", "123"));
+    usuarios.add(new Invitado(3, "Invitado Test", "invitado", "invitado@correo.com", "123"));
   }
 
   public Usuario autenticar(String correoNickname, String password) {
