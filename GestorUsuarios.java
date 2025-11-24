@@ -33,4 +33,21 @@ public class GestorUsuarios {
   public List<Usuario> getUsuarios() {
     return usuarios;
   }
+
+  public Usuario getUsuarioPorId(int id) {
+    for (Usuario usuario : usuarios) {
+      if (usuario.getId() == id) {
+        return usuario;
+      }
+    }
+    return null;
+  }
+  public Usuario getUsuarioPorNickname(String nickname) {
+    for (Usuario usuario : usuarios) {
+      if (usuario.getNickname().equals(nickname)) {
+        return usuario;
+      }
+    }
+    return null;
+  }
 }
