@@ -1,40 +1,47 @@
-public class Tarea {
-    private String id;
-    private String estado; //Pendiente, En Curso, Completado
-    private String usuarioAsignado;
-    private String descripcion;
-    private String fechaEstimadaInicio;
-    private String fechaInicioReal;
-    private String fechaEstimadaFin;
-    private String fechaFinReal;
+import java.time.LocalDate;
 
-    public Tarea(String id, String descripcion, String usuarioAsignado, String fechaEstimadaInicio, String fechaEstimadaFin) {
-      this. id = id;
-      this. descripcion = descripcion;
+public class Tarea {
+    private int id;
+    private String estado; //Pendiente, En Curso, Completado
+    private Usuario usuarioAsignado;
+    private String descripcion;
+    private LocalDate fechaEstimadaInicio;
+    private LocalDate fechaInicioReal;
+    private LocalDate fechaEstimadaFin;
+    private LocalDate fechaFinReal;
+
+    public Tarea(String descripcion, Usuario usuarioAsignado, LocalDate fechaEstimadaInicio, LocalDate fechaEstimadaFin) {
+      // Constructor de la clase Tarea
+      this.id = 0; // El ID se asignará al guardar la tarea
+      this.descripcion = descripcion;
       this.usuarioAsignado = usuarioAsignado;
       this.estado = "Pendiente";
       this.fechaEstimadaInicio = fechaEstimadaInicio; 
       this.fechaEstimadaFin = fechaEstimadaFin;
-      this.fechaInicioReal = ""; 
-      this.fechaFinReal = "";
+      this.fechaInicioReal = null; 
+      this.fechaFinReal = null;
     }
     // Definición de métodos getter para acceder a los atributos de clase tarea
-    public String getId() {return id; }
+    public int getId() {return id; }
     public String getEstado() {return estado; }
-    public String getUsuarioAsignado() {return usuarioAsignado; }
+    public Usuario getUsuarioAsignado() {return usuarioAsignado; }
     public String getDescripcion() { return descripcion; }
-    public String getFechaEstimadaInicio() { return fechaEstimadaInicio; }
-    public String getFechaInicioReal() { return fechaInicioReal; }
-    public String getFechaEstimadaFin () { return fechaEstimadaFin; }
-    public String getFechaFinReal() {return fechaFinReal; }
+    public LocalDate getFechaEstimadaInicio() { return fechaEstimadaInicio; }
+    public LocalDate getFechaInicioReal() { return fechaInicioReal; }
+    public LocalDate getFechaEstimadaFin () { return fechaEstimadaFin; }
+    public LocalDate getFechaFinReal() {return fechaFinReal; }
 
 // Definición de métodos setter para actualizar los atributos de clase tarea
+
+public void setId(int id) {
+  this.id = id;
+}
 
 public void setEstado(String nuevoEstado) {
   this.estado = nuevoEstado;
 }
 
-public void setUsuarioAsignado(String usuarioAsignado) {
+public void setUsuarioAsignado(Usuario usuarioAsignado) {
   this.usuarioAsignado = usuarioAsignado;
 }
 
@@ -42,18 +49,20 @@ public void setDescripcion(String descripcion) {
   this.descripcion = descripcion;
 }
 
-public void setFechaEstimadaInicio(String fecha) {
+public void setFechaEstimadaInicio(LocalDate fecha) {
   this.fechaEstimadaInicio = fecha;
 }
 
-public void setFechaEstimadaFin(String fecha) {
+public void setFechaEstimadaFin(LocalDate fecha) {
   this.fechaEstimadaFin = fecha;
 }
 
-public void iniciarTarea(String fechaInicioReal) {
+public void iniciarTarea(LocalDate fechaInicioReal) {
   this.estado = "En Curso";
   this.fechaInicioReal = fechaInicioReal;
 }
+
+
 
 @Override
   public String toString() {
