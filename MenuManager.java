@@ -30,7 +30,7 @@ public class MenuManager {
 
     private LocalDate leerFecha(String mensaje) {
         // Método para leer fechas en formato AAAA-MM-DD
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-DD");
         while (true) {
             System.out.print(mensaje);
             String entrada = scanner.nextLine();
@@ -39,6 +39,43 @@ public class MenuManager {
             } catch (DateTimeParseException e) {
                 System.out.println("Formato de fecha inválido. Por favor, use AAAA-MM-DD.");
             }
+        }
+    }
+
+    private void registrarUsuario() {
+        // Método para registrar un nuevo usuario
+        try {
+            System.out.print("Ingrese nombre completo: ");
+            String nombre = scanner.nextLine();
+            System.out.print("Ingrese nickname: ");
+            String nickname = scanner.nextLine();
+            System.out.print("Ingrese correo electrónico: ");
+            String correo = scanner.nextLine();
+            System.out.print("Ingrese contraseña: ");
+            String password = scanner.nextLine();
+            System.out.print("Seleccione tipo de usuario (1-Administrador, 2-Desarrollador, 3-Invitado): ");
+            int tipo = leerEntero();
+
+            Usuario nuevoUsuario;
+            switch (tipo) {
+                case 1:
+                    nuevoUsuario = new Administrador(0, nombre, nickname, correo, password);
+                    break;
+                case 2:
+                    nuevoUsuario = new Desarrollador(0, nombre, nickname, correo, password);
+                    break;
+                case 3:
+                    nuevoUsuario = new Invitado(0, nombre, nickname, correo, password);
+                    break;
+                default:
+                    System.out.println("Tipo de usuario no válido.");
+                    return;
+            }
+
+            gestorUsuarios.crearUsuario(nuevoUsuario);
+            System.out.println("Usuario creado exitosamente.");
+        } catch (Exception e) {
+            System.out.println("Error al crear usuario: " + e.getMessage());
         }
     }
 
@@ -67,17 +104,137 @@ public class MenuManager {
             LocalDate fechaFinEst = leerFecha("Fecha estimada de fin (AAAA-MM-DD): ");
 
             if (fechaFinEst.isBefore(fechaInicioEst)) {
-                throw new IllegalArgumentException("La fecha de finalización no puede ser antes que la fecha de inicio.")
-                return;
+                throw new IllegalArgumentException("La fecha de finalización no puede ser antes que la fecha de inicio.");
             }
+
+            // Crear y guardar tarea
             Tarea nuevaTarea = new Tarea(descripcion, asignado, fechaInicioEst, fechaFinEst);
+            if (gestorTareas.crearTarea(nuevaTarea)) {
+                System.out.println("Tarea creada exitosamente.");
+            }
         } catch (Exception e){
             System.out.println("Error al crear la tarea: " + e.getMessage());
         }
     }
 
-    /*
-    Métodos para registrar, actualizar y eliminar tareas */
+    private void eliminarTarea() {
+        // Método para eliminar una tarea
+        System.out.print("Ingrese ID de la tarea a eliminar: ");
+        int id = leerEntero();
+        
+        Tarea tarea = gestorTareas.buscarTareaPorId(id); 
+        
+        if (tarea == null) {
+            System.out.println("Tarea no encontrada.");
+            return;
+        }
+
+        gestorTareas.eliminarTarea(id);
+        System.out.println("Tarea eliminada exitosamente.");
+    }
+
+    private void actualizarTarea(boolean esAdmin) {
+        // Método para actualizar una tarea
+        System.out.print("Ingrese ID de la tarea a actualizar: ");
+        int id = leerEntero();
+        
+        Tarea tarea = gestorTareas.buscarTareaPorId(id); 
+        
+        if (tarea == null) {
+            System.out.println("Tarea no encontrada.");
+            return;
+        }
+
+        if (!esAdmin && !tarea.getUsuarioAsignado().equals(usuarioActual)) {
+            System.out.println("No tienes permiso para editar esta tarea.");
+            return;
+        }
+
+        System.out.println("Estado actual: " + tarea.getEstado());
+        System.out.println("1. Cambiar estado de la tarea");
+        System.out.println("2. Cambiar usuario asignado");
+        System.out.println("3. Editar descripción");
+        System.out.print("4. Modificar fecha estimada de inicio o finalización");
+        System.out.print("Seleccione una opción: ");
+        
+        int op = leerEntero();
+        if (op == 1) {
+            cambioEstado(tarea);
+        } else if (op == 2) {
+            if (!esAdmin) {
+                System.out.println("No tienes permiso para cambiar el usuario asignado.");
+                return;
+            }
+            System.out.print("Ingrese el nickname del nuevo usuario asignado: ");
+            String nickname = scanner.nextLine();
+            Usuario nuevoUsuario = gestorUsuarios.getUsuarioPorNickname(nickname);
+            if (nuevoUsuario != null) {
+                tarea.setUsuarioAsignado(nuevoUsuario);
+                System.out.println("Usuario asignado actualizado.");
+            } else {
+                System.out.println("Usuario no encontrado.");
+            }
+        } else if (op == 3) {
+            System.out.print("Ingrese nueva descripción: ");
+            String nuevaDesc = scanner.nextLine();
+            tarea.setDescripcion(nuevaDesc);
+            System.out.println("Descripción actualizada.");
+        } else if(op == 4){
+            LocalDate nuevaFechaInicio = leerFecha("Nueva fecha estimada de inicio (AAAA-MM-DD): ");
+            LocalDate nuevaFechaFin = leerFecha("Nueva fecha estimada de fin (AAAA-MM-DD): ");
+
+            if (nuevaFechaFin.isBefore(nuevaFechaInicio)) {
+                System.out.println("La fecha de finalización no puede ser antes que la fecha de inicio.");
+                return;
+            }
+            tarea.setFechaEstimadaInicio(nuevaFechaInicio);
+            tarea.setFechaEstimadaFin(nuevaFechaFin);
+            System.out.println("Fechas estimadas actualizadas.");
+        } else {
+            System.out.println("Opción no válida.");
+        }
+        gestorTareas.actualizarTarea(tarea);
+    }
+
+    private void cambioEstado(Tarea tarea) {
+        // Método para cambiar el estado de una tarea
+        String estadoActual = tarea.getEstado();
+
+        System.out.println("Seleccione nuevo estado:");
+
+        if (estadoActual.equals("Pendiente")) {
+            System.out.println("1. En Curso");
+        } else if (estadoActual.equals("En Curso")) {
+            System.out.println("1. Completada");
+        } else {
+            System.out.println("La tarea ya está completada y no puede cambiar.");
+            return;
+        }
+
+        int op = leerEntero();
+        if (op == 1) {
+            if (estadoActual.equals("Pendiente")) {
+                tarea.setEstado("En Curso");
+                tarea.setFechaInicioReal(LocalDate.now());
+            } else if (estadoActual.equals("En Curso")) {
+                tarea.setEstado("Completada");
+                tarea.setFechaFinReal(LocalDate.now());
+            }
+            System.out.println("Estado actualizado.");
+        }
+    }
+
+    private void imprimirListaTareas(java.util.List<Tarea> tareas) {
+        if (tareas.isEmpty()) {
+            System.out.println("No hay tareas para mostrar.");
+        } else {
+            System.out.println("Lista de tareas:");
+            for (Tarea t : tareas) {
+                System.out.println(t.toString()); 
+            }
+        }
+    }
+
 
     public void inicio(){
         // Método principal para iniciar el menú
@@ -106,12 +263,12 @@ public class MenuManager {
             } catch (Exception e) {
                 System.out.println("Error del sistema: " + e.getMessage());
                 }
-        } // Fin while
-    } // Fin método inicio
+        }
+    }
 
     private void procesarLogin() {
 
-        // Método para procesar el inicio de sesión
+        // Método para inicio de sesión
         System.out.print("Ingrese su correo o nickname: ");
         String credencial = scanner.nextLine();
         System.out.print("Ingrese su contraseña: ");
@@ -119,6 +276,7 @@ public class MenuManager {
         try {
             this.usuarioActual = sistemaLogin.iniciarSesion(credencial, password, gestorUsuarios);
             System.out.println("Bienvenidx, " + usuarioActual.getNombre());
+            mostrarMenuCorrespondiente();
         } catch (Exception e) {
             System.out.println("Error de inicio de sesión: " + e.getMessage());
         }
@@ -161,7 +319,7 @@ public class MenuManager {
                     crearTarea(true);
                     break;
                 case 3:
-                    gestorTareas.getTodasLasTareas();
+                    imprimirListaTareas(gestorTareas.getTodasLasTareas());
                     break;
                 case 4:
                     actualizarTarea(true);
@@ -198,7 +356,7 @@ public class MenuManager {
                     crearTarea(false);
                     break;
                 case 2:
-                    gestorTareas.getTareasPorUsuario(usuarioActual.getNickname());
+                    imprimirListaTareas(gestorTareas.getTareasPorUsuario(usuarioActual));
                     break;
                 case 3:
                     actualizarTarea(false);
@@ -218,10 +376,10 @@ public class MenuManager {
     private void menuInvitado(){
         System.out.println("---Menú Invitado ---");
         System.out.println("Tareas asignadas: ");
-        gestorTareas.getTareasPorUsuario(usuarioActual.getNickname());
+        gestorTareas.getTareasPorUsuario(usuarioActual);
         System.out.println("Presione Enter para cerrar sesión.");
         scanner.nextLine();
         usuarioActual = null;
     }
 
-} // Fin de la clase MenuManager
+}
