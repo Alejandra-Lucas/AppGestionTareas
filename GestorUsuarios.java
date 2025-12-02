@@ -21,21 +21,22 @@ public class GestorUsuarios {
     return null;
   } 
 
-  public boolean crearUsuario(Usuario nuevoUsuario) {
+  public void crearUsuario(Usuario nuevoUsuario) throws ErrorCrearUsuarioException {
     // Método para crear un nuevo usuario
+    if (getUsuarioPorNickname(nuevoUsuario.getNickname()) != null) {
+      throw new ErrorCrearUsuarioException("El nickname ya está en uso.");
+    }
+
+    // Creación de ID
     int nuevoId = 1;
-    if (!usuarios.isEmpty()) { // Creación de ID
+    if (!usuarios.isEmpty()) {
       nuevoId = usuarios.get(usuarios.size() - 1).getId() + 1;
     }
     nuevoUsuario.setId(nuevoId);
     
-    if (getUsuarioPorNickname(nuevoUsuario.getNickname()) != null) {
-      System.out.println("Error: El nickname ya existe.");
-      return false;
-    }
+    // Agregar usuario a la lista y guardar
     usuarios.add(nuevoUsuario);
     guardarUsuarios();
-    return true;
   }
 
   public List<Usuario> getUsuarios() {

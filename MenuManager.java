@@ -21,10 +21,12 @@ public class MenuManager {
 
     private int leerEntero() {
         // Método para leer números enteros
-        try{
-            return Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            return -1; // Valor inválido
+        while(true){
+            try{
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada no válida. Por favor, ingrese un número.");
+            }
         }
     }
 
@@ -74,46 +76,54 @@ public class MenuManager {
 
             gestorUsuarios.crearUsuario(nuevoUsuario);
             System.out.println("Usuario creado exitosamente.");
-        } catch (Exception e) {
+        } catch (ErrorCrearUsuarioException e) {
             System.out.println("Error al crear usuario: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 
     private void crearTarea(boolean esAdmin){
         // Método para crear una nueva tarea
+        System.out.print("Crear tarea nueva \n");
         try{
-            System.out.print("Crear nueva tarea: ");
             System.out.print("Ingrese una descripción de la tarea: ");
             String descripcion = scanner.nextLine();
 
             Usuario asignado = usuarioActual;
             if (esAdmin){
                 System.out.println("Ingrese el nickname del usuario asignado: ");
-                System.out.print("Si desea asignarse a sí mismo, deje en blanco y presione Enter ");
+                System.out.print("(Si desea asignarse a sí mismo, deje en blanco y presione Enter)");
                 String nickname = scanner.nextLine();
                 if (!nickname.isEmpty()){
                     asignado = gestorUsuarios.getUsuarioPorNickname(nickname);
+                    // Validar que el usuario exista
                     if (asignado == null){
-                        System.out.println("Usuario no encontrado.");
-                        return;
+                        throw new ErrorCrearTareaException("Usuario no encontrado.");
                     }
                 }
             }
-            // Validar fecha
+            // Validar que las fechas sean correctas
             LocalDate fechaInicioEst = leerFecha("Fecha estimada de inicio (AAAA-MM-DD: ");
+
+            if (fechaInicioEst.isBefore(LocalDate.now())) {
+                throw new ErrorCrearTareaException("La fecha de inicio no puede ser anterior a la fecha actual.");
+            }
             LocalDate fechaFinEst = leerFecha("Fecha estimada de fin (AAAA-MM-DD): ");
 
             if (fechaFinEst.isBefore(fechaInicioEst)) {
-                throw new IllegalArgumentException("La fecha de finalización no puede ser antes que la fecha de inicio.");
+                throw new ErrorCrearTareaException("La fecha de finalización no puede ser antes que la fecha de inicio.");
             }
 
             // Crear y guardar tarea
             Tarea nuevaTarea = new Tarea(descripcion, asignado, fechaInicioEst, fechaFinEst);
-            if (gestorTareas.crearTarea(nuevaTarea)) {
-                System.out.println("Tarea creada exitosamente.");
-            }
+            gestorTareas.crearTarea(nuevaTarea);
+            System.out.println("Tarea creada exitosamente.");
+
+        } catch (ErrorCrearTareaException e){
+            System.out.println("No se pudo crear la tarea: " + e.getMessage());
         } catch (Exception e){
-            System.out.println("Error al crear la tarea: " + e.getMessage());
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 
@@ -135,65 +145,71 @@ public class MenuManager {
 
     private void actualizarTarea(boolean esAdmin) {
         // Método para actualizar una tarea
-        System.out.print("Ingrese ID de la tarea a actualizar: ");
-        int id = leerEntero();
-        
-        Tarea tarea = gestorTareas.buscarTareaPorId(id); 
-        
-        if (tarea == null) {
-            System.out.println("Tarea no encontrada.");
-            return;
-        }
-
-        if (!esAdmin && !tarea.getUsuarioAsignado().equals(usuarioActual)) {
-            System.out.println("No tienes permiso para editar esta tarea.");
-            return;
-        }
-
-        System.out.println("Estado actual: " + tarea.getEstado());
-        System.out.println("1. Cambiar estado de la tarea");
-        System.out.println("2. Cambiar usuario asignado");
-        System.out.println("3. Editar descripción");
-        System.out.print("4. Modificar fecha estimada de inicio o finalización");
-        System.out.print("Seleccione una opción: ");
-        
-        int op = leerEntero();
-        if (op == 1) {
-            cambioEstado(tarea);
-        } else if (op == 2) {
-            if (!esAdmin) {
-                System.out.println("No tienes permiso para cambiar el usuario asignado.");
+        try{
+            System.out.print("Ingrese ID de la tarea a actualizar: ");
+            int id = leerEntero();
+            
+            Tarea tarea = gestorTareas.buscarTareaPorId(id); 
+            
+            if (tarea == null) {
+                System.out.println("Tarea no encontrada.");
                 return;
             }
-            System.out.print("Ingrese el nickname del nuevo usuario asignado: ");
-            String nickname = scanner.nextLine();
-            Usuario nuevoUsuario = gestorUsuarios.getUsuarioPorNickname(nickname);
-            if (nuevoUsuario != null) {
-                tarea.setUsuarioAsignado(nuevoUsuario);
-                System.out.println("Usuario asignado actualizado.");
+
+            if (!esAdmin && !tarea.getUsuarioAsignado().equals(usuarioActual)) {
+                System.out.println("No tienes permiso para editar esta tarea.");
+                return;
+            }
+
+            System.out.println("Estado actual: " + tarea.getEstado());
+            System.out.println("1. Cambiar estado de la tarea");
+            System.out.println("2. Cambiar usuario asignado");
+            System.out.println("3. Editar descripción");
+            System.out.print("4. Modificar fecha estimada de inicio o finalización");
+            System.out.print("Seleccione una opción: ");
+            
+            int op = leerEntero();
+            if (op == 1) {
+                cambioEstado(tarea);
+            } else if (op == 2) {
+                if (!esAdmin) {
+                    System.out.println("No tienes permiso para cambiar el usuario asignado.");
+                    return;
+                }
+                System.out.print("Ingrese el nickname del nuevo usuario asignado: ");
+                String nickname = scanner.nextLine();
+                Usuario nuevoUsuario = gestorUsuarios.getUsuarioPorNickname(nickname);
+                if (nuevoUsuario != null) {
+                    tarea.setUsuarioAsignado(nuevoUsuario);
+                    System.out.println("Usuario asignado actualizado.");
+                } else {
+                    System.out.println("Usuario no encontrado.");
+                }
+            } else if (op == 3) {
+                System.out.print("Ingrese nueva descripción: ");
+                String nuevaDesc = scanner.nextLine();
+                tarea.setDescripcion(nuevaDesc);
+                System.out.println("Descripción actualizada.");
+            } else if(op == 4){
+                LocalDate nuevaFechaInicio = leerFecha("Nueva fecha estimada de inicio (AAAA-MM-DD): ");
+                LocalDate nuevaFechaFin = leerFecha("Nueva fecha estimada de fin (AAAA-MM-DD): ");
+
+                if (nuevaFechaFin.isBefore(nuevaFechaInicio)) {
+                    System.out.println("La fecha de finalización no puede ser antes que la fecha de inicio.");
+                    return;
+                }
+                tarea.setFechaEstimadaInicio(nuevaFechaInicio);
+                tarea.setFechaEstimadaFin(nuevaFechaFin);
+                System.out.println("Fechas estimadas actualizadas.");
             } else {
-                System.out.println("Usuario no encontrado.");
+                System.out.println("Opción no válida.");
             }
-        } else if (op == 3) {
-            System.out.print("Ingrese nueva descripción: ");
-            String nuevaDesc = scanner.nextLine();
-            tarea.setDescripcion(nuevaDesc);
-            System.out.println("Descripción actualizada.");
-        } else if(op == 4){
-            LocalDate nuevaFechaInicio = leerFecha("Nueva fecha estimada de inicio (AAAA-MM-DD): ");
-            LocalDate nuevaFechaFin = leerFecha("Nueva fecha estimada de fin (AAAA-MM-DD): ");
-
-            if (nuevaFechaFin.isBefore(nuevaFechaInicio)) {
-                System.out.println("La fecha de finalización no puede ser antes que la fecha de inicio.");
-                return;
-            }
-            tarea.setFechaEstimadaInicio(nuevaFechaInicio);
-            tarea.setFechaEstimadaFin(nuevaFechaFin);
-            System.out.println("Fechas estimadas actualizadas.");
-        } else {
-            System.out.println("Opción no válida.");
+            gestorTareas.actualizarTarea(tarea);
+        } catch (ErrorActualizarTareaException e){
+            System.out.println("No se pudo actualizar la tarea: " + e.getMessage());
+        } catch (Exception e){
+            System.out.println("Error inesperado: " + e.getMessage());
         }
-        gestorTareas.actualizarTarea(tarea);
     }
 
     private void cambioEstado(Tarea tarea) {
@@ -277,8 +293,12 @@ public class MenuManager {
             this.usuarioActual = sistemaLogin.iniciarSesion(credencial, password, gestorUsuarios);
             System.out.println("Bienvenidx, " + usuarioActual.getNombre());
             mostrarMenuCorrespondiente();
-        } catch (Exception e) {
+        } catch (UserNotFoundException e) {
             System.out.println("Error de inicio de sesión: " + e.getMessage());
+        } catch (IncorrectPasswordException e) {
+            System.out.println("Error de inicio de sesión: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado durante el inicio de sesión: " + e.getMessage());  
         }
     }
 

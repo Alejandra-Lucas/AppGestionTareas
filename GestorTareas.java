@@ -12,21 +12,21 @@ public class GestorTareas {
   
     }
     
-    public boolean crearTarea(Tarea tarea) {
+    public void crearTarea(Tarea tarea) throws ErrorCrearTareaException {
         // Método para crear una nueva tarea
         try {
+
+        // Creación de ID
         int nuevoId = 1;
-        if (!tareas.isEmpty()) { // Creación de ID
+        if (!tareas.isEmpty()) {
             nuevoId = tareas.get(getTotalTareas() - 1).getId() + 1;
         }
         tarea.setId(nuevoId);
         tarea.setEstado("Pendiente"); // Estado inicial
         tareas.add(tarea);
         guardarTareas();
-        return true;
     } catch (Exception e) {
-        System.out.println("Error al guardar la tarea: " + e.getMessage());
-        return false;
+        throw new ErrorCrearTareaException("Error al crear la tarea: " + e.getMessage());
     }
     }
   
@@ -63,15 +63,17 @@ public class GestorTareas {
         return null; // No encontrada
     }
     
-    public boolean actualizarTarea(Tarea tareaActualizada) {
-        for (int i = 0; i < tareas.size(); i++) {
-            if (tareas.get(i).getId() == tareaActualizada.getId()) {
-                tareas.set(i, tareaActualizada);
-                guardarTareas();
-                return true;
+    public void actualizarTarea(Tarea tareaActualizada) throws ErrorActualizarTareaException {
+        try{
+            for (int i = 0; i < tareas.size(); i++) {
+                if (tareas.get(i).getId() == tareaActualizada.getId()) {
+                    tareas.set(i, tareaActualizada);
+                    guardarTareas();
+                }
             }
+        } catch (Exception e){
+            throw new ErrorActualizarTareaException("Error al actualizar la tarea: " + e.getMessage());
         }
-        return false; // No se encontró la tarea
     }
     
     public boolean eliminarTarea(int id) {
