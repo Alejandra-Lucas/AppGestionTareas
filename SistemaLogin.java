@@ -13,10 +13,10 @@ public class SistemaLogin {
                 if (user.getPassword().equals(password)) {
                     return user; // Credenciales correctas
             } else{
-                throw new Exception("Contraseña incorrecta.");
+                throw new IncorrectPasswordException("La contraseña es incorrecta.");
             }
             }
         }
-        throw new Exception("Usuario no encontrado.");
+        throw new UserNotFoundException("El usuario no fue encontrado.");
     }
 }
