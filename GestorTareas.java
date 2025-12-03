@@ -34,6 +34,10 @@ public class GestorTareas {
         return new ArrayList<>(tareas); 
     }
     
+    public List<Tarea> getTareas() {
+        return new ArrayList<>(tareas);
+    }
+
     public List<Tarea> getTareasPorUsuario(Usuario usuario) {
         List<Tarea> resultado = new ArrayList<>();
         for (Tarea tarea : tareas) {
@@ -111,4 +115,8 @@ public class GestorTareas {
             }
         }
     }
+public void setTareas(List<Tarea> lista) {
+    this.tareas = lista;
 }
+}
+
