@@ -1,62 +1,44 @@
-/**
- * Punto de entrada del sistema.
- * - Carga usuarios y tareas desde archivos (la serialización)
- * - Ejecuta login y menú
- * - Guarda datos al salir
- */
+import java.util.Scanner;
+
 public class Main {
-
     public static void main(String[] args) {
-
-        // Creamos los gestores
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("\n====================================");
+        System.out.println("   SISTEMA DE GESTIÓN DE TAREAS   ");
+        System.out.println("====================================\n");
+        
+        // Inicializar gestores
         GestorUsuarios gestorUsuarios = new GestorUsuarios();
         GestorTareas gestorTareas = new GestorTareas();
-
-        // Cargar desde la persistencia 
-        try {
-            java.util.List<Usuario> usuarios = Persistencia.cargarUsuarios();
-            if (usuarios != null && !usuarios.isEmpty()) {
-                gestorUsuarios.setUsuarios(usuarios);
-            }
-        } catch (Exception e) {
-            System.err.println("Error al cargar usuarios: " + e.getMessage());
-        }
-
-        try {
-            java.util.List<Tarea> tareas = Persistencia.cargarTareas();
-            if (tareas != null && !tareas.isEmpty()) {
-                gestorTareas.setTareas(tareas);
-            }
-        } catch (Exception e) {
-            System.err.println("Error al cargar tareas: " + e.getMessage());
-        }
-
-        InterfazConsola.titulo("Sistema de Gestión de Tareas");
-
-        SistemaLogin login = new SistemaLogin(gestorUsuarios);
+        
+        System.out.println("[✓] Sistema inicializado");
+        
+        // Crear MenuManager con los gestores
         MenuManager menu = new MenuManager(gestorUsuarios, gestorTareas);
-
-        Usuario usuario = null;
-        try {
-            usuario = login.iniciarSesion(); 
-        } catch (Exception e) {
-            System.err.println("Error en login: " + e.getMessage());
-        }
-
-        if (usuario == null) {
-            System.out.println("No se inició sesión. Saliendo.");
-        } else {
-            menu.mostrarMenuSegunRol(usuario);
-        }
-
-        // guardamos los datos antes de salir
+        
+        System.out.println("\nPresiona ENTER para comenzar...");
+        scanner.nextLine();
+        
+        // Iniciar el sistema de menús
+        menu.inicio();
+        
+        // guardamos los datos
+        System.out.println("\nGuardando datos antes de salir...");
         try {
             Persistencia.guardarUsuarios(gestorUsuarios.getUsuarios());
-            Persistencia.guardarTareas(gestorTareas.getTareas());
+            Persistencia.guardarTareas(gestorTareas.getTodasLasTareas());
+            System.out.println("[✓] Datos guardados exitosamente");
         } catch (Exception e) {
-            System.err.println("Error guardando datos: " + e.getMessage());
+            System.err.println("Error al guardar datos: " + e.getMessage());
         }
-
-        System.out.println("\nDatos guardados. Fin del programa.");
+        
+        // Mensaje de despedida
+        System.out.println("\n====================================");
+        System.out.println("   ¡Gracias por usar el sistema!   ");
+        System.out.println("====================================\n");
+        
+        scanner.close();
     }
 }
+
