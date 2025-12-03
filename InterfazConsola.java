@@ -1,13 +1,11 @@
 import java.util.Scanner;
 
-/**
- * Interfaz para mejorar la salida en consola
- */
+//creamos la interfaz de nuestra app
 public class InterfazConsola {
 
     private static final Scanner sc = new Scanner(System.in);
-    private static final boolean COLORES = false;
-
+     
+    //mostramos el titulo
     public static void titulo(String t) {
         limpiarLinea();
         System.out.println();
@@ -50,10 +48,10 @@ public class InterfazConsola {
         System.out.println(msg);
     }
 
-    // Mostrar lista de tareas (usa toString de Tarea)
+    // Mostramos la lista de tareas 
     public static void mostrarTareas(java.util.List<Tarea> tareas) {
         System.out.println("\n--- Lista de Tareas ---");
-        if (tareas.isEmpty()) {
+        if (tareas == null || tareas.isEmpty()) {
             System.out.println("(no hay tareas)");
             return;
         }
@@ -67,7 +65,7 @@ public class InterfazConsola {
     // Mostrar lista de usuarios
     public static void mostrarUsuarios(java.util.List<Usuario> usuarios) {
         System.out.println("\n--- Lista de Usuarios ---");
-        if (usuarios.isEmpty()) {
+        if (usuarios == null || usuarios.isEmpty()) {
             System.out.println("(no hay usuarios)");
             return;
         }
@@ -78,3 +76,4 @@ public class InterfazConsola {
         }
     }
 }
+
