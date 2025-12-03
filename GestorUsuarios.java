@@ -93,4 +93,7 @@ public class GestorUsuarios {
     usuarios.add(new Invitado(3, "Invitado Test", "invitado", "invitado@correo.com", "123"));
     guardarUsuarios();
   }
+
+  public void setUsuarios(List<Usuario> lista) {
+  }
 }
