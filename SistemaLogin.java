@@ -1,6 +1,8 @@
 import java.util.List;
 
 public class SistemaLogin {
+    public SistemaLogin(){}
+    
 
     // Método para verificar las credenciales de inicio de sesión
     public Usuario iniciarSesion(String credencial, String password, GestorUsuarios gestorUsuarios) throws Exception {
