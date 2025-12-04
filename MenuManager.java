@@ -2,6 +2,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuManager {
     private Scanner scanner;
@@ -17,8 +19,16 @@ public class MenuManager {
         this.gestorTareas = new GestorTareas();
     }
 
-    // Definimos métodos necesarios para el menú
+    // Constructor para main
+    public MenuManager(GestorUsuarios gestorUsuarios, GestorTareas gestorTareas) {
+        this.scanner = new Scanner(System.in);
+        this.sistemaLogin = new SistemaLogin();
+        this.gestorUsuarios = gestorUsuarios;  
+        this.gestorTareas = gestorTareas;    
+    }
 
+    // Definimos métodos necesarios para el menú
+    
     private int leerEntero() {
         // Método para leer números enteros
         while(true){
@@ -251,6 +261,96 @@ public class MenuManager {
         }
     }
 
+    // Método para filtrar tareas (usado por Admin)
+    private void filtrarTareasAdmin() {
+        System.out.println("\n--- Filtrar Tareas (Admin) ---");
+        System.out.println("1. Filtrar por estado");
+        System.out.println("2. Filtrar por usuario");
+        System.out.print("Seleccione opción: ");
+        int opcion = leerEntero();
+        
+        switch (opcion) {
+            case 1:
+                filtrarPorEstado();
+                break;
+            case 2:
+                filtrarPorUsuario();
+                break;
+            default:
+                System.out.println("Opción no válida");
+        }
+    }
+    
+    // Filtrar por estado (usado por todos)
+    private void filtrarPorEstado() {
+        System.out.println("\nEstados disponibles:");
+        System.out.println("1. Pendiente");
+        System.out.println("2. En Curso");
+        System.out.println("3. Completada");
+        System.out.print("Seleccione estado: ");
+        int op = leerEntero();
+        
+        String estado = "";
+        switch (op) {
+            case 1: estado = "Pendiente"; break;
+            case 2: estado = "En Curso"; break;
+            case 3: estado = "Completada"; break;
+            default:
+                System.out.println("Estado no válido");
+                return;
+        }
+        
+        java.util.List<Tarea> tareasFiltradas = gestorTareas.getTareasPorEstado(estado);
+        imprimirListaTareas(tareasFiltradas);
+    }
+    
+    // Filtrar por usuario 
+    private void filtrarPorUsuario() {
+        System.out.print("Ingrese nickname del usuario: ");
+        String nickname = scanner.nextLine();
+        Usuario usuario = gestorUsuarios.getUsuarioPorNickname(nickname);
+        
+        if (usuario == null) {
+            System.out.println("Usuario no encontrado");
+            return;
+        }
+        
+        java.util.List<Tarea> tareasFiltradas = gestorTareas.getTareasPorUsuario(usuario);
+        imprimirListaTareas(tareasFiltradas);
+    }
+    
+    // Filtrar por estado 
+    private void filtrarTareasPorEstadoUsuario() {
+        System.out.println("\n--- Filtrar Mis Tareas por Estado ---");
+        System.out.println("Estados disponibles:");
+        System.out.println("1. Pendiente");
+        System.out.println("2. En Curso");
+        System.out.println("3. Completada");
+        System.out.print("Seleccione estado: ");
+        int op = leerEntero();
+        
+        String estado = "";
+        switch (op) {
+            case 1: estado = "Pendiente"; break;
+            case 2: estado = "En Curso"; break;
+            case 3: estado = "Completada"; break;
+            default:
+                System.out.println("Estado no válido");
+                return;
+        }
+        
+        
+        java.util.List<Tarea> todasTareasUsuario = gestorTareas.getTareasPorUsuario(usuarioActual);
+        // Filtrar por estado
+        List<Tarea> tareasFiltradas = new ArrayList<>();
+        for (Tarea t : todasTareasUsuario) {
+            if (t.getEstado().equals(estado)) {
+                tareasFiltradas.add(t);
+            }
+        }
+        
+        imprimirListaTareas(tareasFiltradas);
+    }
 
     public void inicio(){
         // Método principal para iniciar el menú
@@ -326,7 +426,8 @@ public class MenuManager {
             System.out.println("3. Ver todas las tareas");
             System.out.println("4. Actualizar tarea");
             System.out.println("5. Eliminar tarea");
-            System.out.println("6. Cerrar sesión");
+            System.out.println("6. Filtrar tareas");
+            System.out.println("7. Cerrar sesión");
 
             System.out.print("Seleccione una opción: ");
             int opcion = leerEntero();
@@ -348,6 +449,9 @@ public class MenuManager {
                     eliminarTarea();
                     break;
                 case 6:
+                    filtrarTareasAdmin();
+                    break;
+                case 7:
                     salir = true;
                     usuarioActual = null;
                     break;
@@ -365,8 +469,9 @@ public class MenuManager {
             System.out.println("--- Menú Desarrollador ---");
             System.out.println("1. Crear tareas");
             System.out.println("2. Ver mis tareas");
-            System.out.println("3. Actualizar tareas");
-            System.out.println("4. Cerrar sesión");
+            System.out.println("3. Filtrar mis tareas por estado");
+            System.out.println("4. Actualizar tareas");
+            System.out.println("5. Cerrar sesión");
 
             System.out.print("Seleccione una opción: ");
             int opcion = leerEntero();
@@ -379,9 +484,12 @@ public class MenuManager {
                     imprimirListaTareas(gestorTareas.getTareasPorUsuario(usuarioActual));
                     break;
                 case 3:
-                    actualizarTarea(false);
+                    filtrarTareasPorEstadoUsuario();
                     break;
                 case 4:
+                    actualizarTarea(false);
+                    break;
+                case 5:
                     salir = true;
                     usuarioActual = null;
                     break;
@@ -393,13 +501,35 @@ public class MenuManager {
     }
 
     // ------ Menú Invitado ------
-    private void menuInvitado(){
-        System.out.println("---Menú Invitado ---");
-        System.out.println("Tareas asignadas: ");
-        gestorTareas.getTareasPorUsuario(usuarioActual);
-        System.out.println("Presione Enter para cerrar sesión.");
-        scanner.nextLine();
-        usuarioActual = null;
+     private void menuInvitado(){
+        boolean salir = false;
+        while (!salir) {
+            System.out.println("--- Menú Invitado ---");
+            System.out.println("1. Ver todas las tareas");
+            System.out.println("2. Filtrar tareas por estado");
+            System.out.println("3. Filtrar tareas por usuario");
+            System.out.println("4. Cerrar sesión");
+            
+            System.out.print("Seleccione una opción: ");
+            int opcion = leerEntero();
+            
+            switch (opcion) {
+                case 1:
+                    imprimirListaTareas(gestorTareas.getTodasLasTareas());
+                    break;
+                case 2:
+                    filtrarPorEstado();
+                    break;
+                case 3:
+                    filtrarPorUsuario();
+                    break;
+                case 4:
+                    salir = true;
+                    usuarioActual = null;
+                    break;
+                default:
+                    System.out.println("Opción no válida");
+            }
+        }
     }
-
 }
