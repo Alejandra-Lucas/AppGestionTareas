@@ -19,6 +19,6 @@ public class SistemaLogin {
             }
             }
         }
-        throw new UserNotFoundException("El usuario no fue encontrado.");
+        throw new UserNotFoundException("El usuario no fue encontrado o la contraseña es incorrecta.");
     }
 }
