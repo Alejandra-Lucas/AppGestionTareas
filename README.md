@@ -8,3 +8,4 @@ Proyecto final de programación: Aplicación de gestión de tareas
 |Lucas Coronel Alejandra|319194335|-|
 |Sánchez Martínez Rodrigo|319297168|-|
 |Vásquez Hernández Griselda|-|No trabajó|
+|Felipe Pineda Danna Fernanda|320063538|-|
