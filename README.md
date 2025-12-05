@@ -2,9 +2,9 @@
 
 Proyecto final de programación: Aplicación de gestión de tareas
 
-|Integrantes|Número de cuenta|observaciones|
-|-|-|-|
-|Contreras Olivares Itzel|322298563|-|
-|Lucas Coronel Alejandra|319194335|-|
-|Sánchez Martínez Rodrigo|319297168|-|
-|Felipe Pineda Danna Fernanda|320063538|-|
+|Integrantes|Número de cuenta|
+|-|-|
+|Contreras Olivares Itzel|322298563|
+|Felipe Pineda Danna Fernanda|320063538|
+|Lucas Coronel Alejandra|319194335|
+|Sánchez Martínez Rodrigo|319297168|
