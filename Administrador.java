@@ -14,7 +14,7 @@ public class Administrador extends Usuario {
       System.out.println("3. Ver todas las tareas");
       System.out.println("4. Actualizar tareas");
       System.out.println("5. Eliminar tareas");
-      System.out.println("6. Filtrar tareas");
+      System.out.println("6. Filtrar tareas"); Linea de menú que habilita la función de filtrado de tareas
       System.out.println("7. Cerrar sesión");
     }
 
