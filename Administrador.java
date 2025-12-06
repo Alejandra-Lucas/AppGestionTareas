@@ -1,4 +1,4 @@
-// Clase Administrador que hereda de Usuario
+// Clase Administrador que hereda de Usuario Representa a un usuario Administrador, con permisos para gestionar usuarios y tareas.
 public class Administrador extends Usuario {
 
     public Administrador(int id, String nombre, String nickname, String correo, String password){
