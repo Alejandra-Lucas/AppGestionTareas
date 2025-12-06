@@ -10,7 +10,7 @@ public class Administrador extends Usuario {
     
       System.out.println("=== MENÚ ADMINISTRADOR ==="); presenta el menú principal para usuarios.
       System.out.println("1. Crear nuevo usuario");
-      System.out.println("2. Crear tarea");
+      System.out.println("2. Crear tarea"); imprime la opcion que permite al usuario crear un a tarea.
       System.out.println("3. Ver todas las tareas");
       System.out.println("4. Actualizar tareas");
       System.out.println("5. Eliminar tareas");
