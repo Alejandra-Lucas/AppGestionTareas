@@ -1,7 +1,7 @@
+// Clase Administrador que hereda de Usuario
 public class Administrador extends Usuario {
 
-    public Administrador(int id, String nombre, String nickname, String correo, String password)
- {
+    public Administrador(int id, String nombre, String nickname, String correo, String password){
       super(id, nombre, nickname, correo, password);
     }
 

@@ -440,7 +440,7 @@ public class MenuManager {
                     crearTarea(true);
                     break;
                 case 3:
-                    imprimirListaTareas(gestorTareas.getTodasLasTareas());
+                    imprimirListaTareas(gestorTareas.getTareas());
                     break;
                 case 4:
                     actualizarTarea(true);
@@ -515,7 +515,7 @@ public class MenuManager {
             
             switch (opcion) {
                 case 1:
-                    imprimirListaTareas(gestorTareas.getTodasLasTareas());
+                    imprimirListaTareas(gestorTareas.getTareas());
                     break;
                 case 2:
                     filtrarPorEstado();

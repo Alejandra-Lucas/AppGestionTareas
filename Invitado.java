@@ -1,3 +1,4 @@
+// Classe que representa un usuario invitado que hereda de Usuario
 public class Invitado extends Usuario {
 
     public Invitado(int id, String nombre, String nickname, String correo, String password) {

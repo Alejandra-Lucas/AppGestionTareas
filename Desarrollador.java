@@ -1,3 +1,4 @@
+// Clase Desarrollador que hereda de Usuario
 public class Desarrollador extends Usuario {
 
     public Desarrollador(int id, String nombre, String nickname, String correo, String password)

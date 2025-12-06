@@ -20,6 +20,7 @@ public class Main {
         System.out.println("\nPresiona ENTER para comenzar...");
         scanner.nextLine();
         
+    
         // Iniciar el sistema de menús
         menu.inicio();
         
@@ -27,7 +28,7 @@ public class Main {
         System.out.println("\nGuardando datos antes de salir...");
         try {
             Persistencia.guardarUsuarios(gestorUsuarios.getUsuarios());
-            Persistencia.guardarTareas(gestorTareas.getTodasLasTareas());
+            Persistencia.guardarTareas(gestorTareas.getTareas());
             System.out.println("[✓] Datos guardados exitosamente");
         } catch (Exception e) {
             System.err.println("Error al guardar datos: " + e.getMessage());

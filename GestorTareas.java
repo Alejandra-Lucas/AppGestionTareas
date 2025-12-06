@@ -1,3 +1,4 @@
+// Clase GestorTareas que maneja las operaciones para las tareas
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
@@ -29,16 +30,14 @@ public class GestorTareas {
         throw new ErrorCrearTareaException("Error al crear la tarea: " + e.getMessage());
     }
     }
-  
-    public List<Tarea> getTodasLasTareas() {
-        return new ArrayList<>(tareas); 
-    }
     
     public List<Tarea> getTareas() {
+        // Método para obtener todas las tareas
         return new ArrayList<>(tareas);
     }
 
     public List<Tarea> getTareasPorUsuario(Usuario usuario) {
+        // Método para obtener tareas asignadas a un usuario específico
         List<Tarea> resultado = new ArrayList<>();
         for (Tarea tarea : tareas) {
             if (tarea.getUsuarioAsignado().equals(usuario)) {
@@ -49,6 +48,7 @@ public class GestorTareas {
     }
     
     public List<Tarea> getTareasPorEstado(String estado) {
+        // Método para obtener tareas por estado
         List<Tarea> resultado = new ArrayList<>();
         for (Tarea tarea : tareas) {
             if (tarea.getEstado().equals(estado)) {
@@ -59,6 +59,7 @@ public class GestorTareas {
     }
     
     public Tarea buscarTareaPorId(int id) {
+        // Método para buscar una tarea por su ID
         for (Tarea tarea : tareas) {
             if (tarea.getId() == id) {
                 return tarea;
@@ -68,6 +69,7 @@ public class GestorTareas {
     }
     
     public void actualizarTarea(Tarea tareaActualizada) throws ErrorActualizarTareaException {
+        // Método para actualizar una tarea existente
         try{
             for (int i = 0; i < tareas.size(); i++) {
                 if (tareas.get(i).getId() == tareaActualizada.getId()) {
@@ -81,6 +83,7 @@ public class GestorTareas {
     }
     
     public boolean eliminarTarea(int id) {
+        // Método para eliminar una tarea por su ID
         for (int i = 0; i < tareas.size(); i++) {
             if (tareas.get(i).getId() == id) {
                 tareas.remove(i);
@@ -92,6 +95,7 @@ public class GestorTareas {
     }
     
     public int getTotalTareas() {
+        // Método para obtener el total de tareas
         return tareas.size();
     }
     private void guardarTareas() {
@@ -105,6 +109,7 @@ public class GestorTareas {
 
     @SuppressWarnings("unchecked")
     private void cargarTareas() {
+        // Cargar la lista de tareas desde un archivo
         File archivo = new File(ARCHIVO_TAREAS);
         if (archivo.exists()) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
@@ -116,6 +121,7 @@ public class GestorTareas {
         }
     }
 public void setTareas(List<Tarea> lista) {
+    // Método SET para establecer la lista de tareas
     this.tareas = lista;
 }
 }

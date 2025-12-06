@@ -1,3 +1,4 @@
+// Classe para gestionar usuarios
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
@@ -12,6 +13,7 @@ public class GestorUsuarios {
   }
 
   public Usuario autenticar(String correoNickname, String password) {
+    // Método para autenticar un usuario por correo o nickname y contraseña
     for (Usuario usuario : usuarios) {
       if ((usuario.getCorreo().equals(correoNickname) || usuario.getNickname().equals(correoNickname))
           && usuario.getPassword().equals(password)) {
@@ -44,6 +46,7 @@ public class GestorUsuarios {
   }
 
   public Usuario getUsuarioPorId(int id) {
+    // Método para obtener un usuario por su ID
     for (Usuario usuario : usuarios) {
       if (usuario.getId() == id) {
         return usuario;
@@ -52,6 +55,7 @@ public class GestorUsuarios {
     return null;
   }
   public Usuario getUsuarioPorNickname(String nickname) {
+    // Método para obtener un usuario por su nickname
     for (Usuario usuario : usuarios) {
       if (usuario.getNickname().equals(nickname)) {
         return usuario;
@@ -95,5 +99,7 @@ public class GestorUsuarios {
   }
 
   public void setUsuarios(List<Usuario> lista) {
+    // Método SET para establecer la lista de usuarios
+    this.usuarios = lista;
   }
 }

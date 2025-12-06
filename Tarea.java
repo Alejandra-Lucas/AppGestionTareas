@@ -1,3 +1,4 @@
+// Clase para definir una Tarea
 import java.time.LocalDate;
 import java.io.Serializable;
 

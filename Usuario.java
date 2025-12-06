@@ -1,3 +1,4 @@
+// Classe que representa un usuario
 import java.io.Serializable;
 
 public abstract class Usuario implements Serializable {
