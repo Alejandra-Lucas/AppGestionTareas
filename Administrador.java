@@ -8,7 +8,7 @@ public class Administrador extends Usuario {
     @Override
     public void mostrarMenu() {  Muestra en pantalla las opciones disponibles.
     
-      System.out.println("=== MENÚ ADMINISTRADOR ===");
+      System.out.println("=== MENÚ ADMINISTRADOR ==="); presenta el menú principal para usuarios.
       System.out.println("1. Crear nuevo usuario");
       System.out.println("2. Crear tarea");
       System.out.println("3. Ver todas las tareas");
